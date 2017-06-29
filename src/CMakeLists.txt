@@ -7,5 +7,5 @@ file(GLOB INCLUDES
 foreach(SOURCE ${SOURCES})
     get_filename_component(tgt ${SOURCE} NAME_WE)
     add_executable(${tgt} ${SOURCE} ${INCLUDES})
-    target_link_libraries(${tgt} ${cppzmq_LIBRARY})
+    target_link_libraries(${tgt} ${cppzmq_LIBRARY} msgpackc)
 endforeach()

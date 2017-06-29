@@ -3,8 +3,11 @@ cmake_minimum_required(VERSION 2.8.3)
 project(zmq-communication)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 find_package(cppzmq REQUIRED)
 include_directories(${cppzmq_INCLUDE_DIR})
+
+#find_package(msgpack REQUIRED)
 
 add_subdirectory(src)
