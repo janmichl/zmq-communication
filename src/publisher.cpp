@@ -1,3 +1,10 @@
+/**
+    @file
+    @author Jan Michalczyk 
+
+    @brief
+*/
+
 #include <iostream>
 #include <string>
 #include <iomanip>
