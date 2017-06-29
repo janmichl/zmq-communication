@@ -8,6 +8,4 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 find_package(cppzmq REQUIRED)
 include_directories(${cppzmq_INCLUDE_DIR})
 
-#find_package(msgpack REQUIRED)
-
 add_subdirectory(src)
