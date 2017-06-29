@@ -1,0 +1,9 @@
+[submodule "contrib/msgpack-c"]
+	path = contrib/msgpack-c
+	url = https://github.com/msgpack/msgpack-c.git
+[submodule "contrib/libzmq"]
+	path = contrib/libzmq
+	url = https://github.com/zeromq/libzmq.git
+[submodule "contrib/cppzmq"]
+	path = contrib/cppzmq
+	url = https://github.com/zeromq/cppzmq.git
