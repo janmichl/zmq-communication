@@ -15,25 +15,21 @@
 
 namespace communication
 {
+    template <typename message_type> 
     class Subscriber
     {
         public:
-            Subscriber(const std::string& topic) : context_(ZEROMQ_NUM_OF_THREADS_USED),
+            Subscriber(const char* topic) : context_(ZEROMQ_NUM_OF_THREADS_USED),
                                                    subscriber_(context_, ZMQ_SUB)
             {
-                //  Prepare our context and subscriber
+                std::string topic_str = std::string(topic);
+                
                 subscriber_.connect("tcp://localhost:5563");
-                subscriber_.setsockopt(ZMQ_SUBSCRIBE, topic.data(), topic.size());
-            }
-
-
-            std::string receive()
-            {
-                return(receiveFromSocket());
+                subscriber_.setsockopt(ZMQ_SUBSCRIBE, topic_str.data(), topic_str.size());
             }
             
             
-            void receive(std::vector<double>& vector)
+            void receive(message_type& message)
             {
                 //remove topic name from message
                 receiveFromSocket();
@@ -49,7 +45,7 @@ namespace communication
                 //std::cout << obj << std::endl;
 
                 // convert it into statically typed object.
-                obj.convert(vector);
+                obj.convert(message);
             }
 
 
@@ -80,12 +76,11 @@ namespace communication
 
 int main()
 {
-    communication::Subscriber subscriber(std::string("topic"));
+    communication::Subscriber<std::vector<double> > subscriber("topic");
     
     std::vector<double> message;
     while(true)
     {
-        //std::string message = subscriber.receive();
         subscriber.receive(message);
         std::cout << "Received: " << message[0] << " " << message[1] << std::endl;
     }

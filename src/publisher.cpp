@@ -14,34 +14,24 @@
 
 #define ZEROMQ_NUM_OF_THREADS_USED 1
 
-// this should be templated
 namespace communication
 {
+    template <typename message_type>
     class Publisher
     {
         public:
             Publisher() : context_(ZEROMQ_NUM_OF_THREADS_USED),
                           publisher_(context_, ZMQ_PUB)
             {
-                //  Prepare our context and publisher
                 publisher_.bind("tcp://*:5563");
             }
-
-
-            void publish(const std::string& topic, const std::string& message)
-            {
-                sendToTopic(topic.data());
-                send(message.data());
-            }
             
             
-            void publish(const std::string& topic, const std::vector<double>& vector)
+            void publish(const char* topic, const message_type& message)
             {
-                sendToTopic(topic.data());
-                
+                setTopic(std::string(topic));
                 msgpack::sbuffer sbuf;
-                serializeMessage(sbuf, vector);
-
+                serializeMessage(sbuf, message);
                 send(sbuf);
             }
         
@@ -52,11 +42,10 @@ namespace communication
 
 
         private:
-            // this should be templated
-            void serializeMessage(msgpack::sbuffer& sbuf, const std::vector<double>& vector)
+            void serializeMessage(msgpack::sbuffer& sbuf, const message_type& message)
             {
                 // serialize it into simple buffer.
-                msgpack::pack(sbuf, vector);
+                msgpack::pack(sbuf, message);
             }
             
 
@@ -68,19 +57,9 @@ namespace communication
                 
                 return(rc);
             }
-
-
-            bool send(const std::string& content)
-            {
-                zmq::message_t message(content.size());
-                memcpy(message.data(), content.data(), content.size());
-                bool rc = publisher_.send(message);
-                
-                return(rc);
-            }
             
             
-            bool sendToTopic(const std::string& topic_name)
+            bool setTopic(const std::string& topic_name)
             {
                 zmq::message_t message(topic_name.size());
                 memcpy(message.data(), topic_name.data(), topic_name.size());
@@ -94,17 +73,15 @@ namespace communication
 
 int main()
 {
-    communication::Publisher publisher;
+    communication::Publisher<std::vector<double> > publisher;
 
-    std::string topic   = "topic";
-    //std::string message = "message";
     std::vector<double> message;
     message.push_back(10);
     message.push_back(20);
 
-    for(;;)
+    while(true)
     {
-        publisher.publish(topic, message);
+        publisher.publish("topic", message);
     }
     
     return(0);
