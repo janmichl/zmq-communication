@@ -25,6 +25,7 @@ set(LIBZMQ_DIR            "${PROJECT_SOURCE_DIR}/contrib/libzmq")
 set(CMAKE_CXX_FLAGS_DEBUG "")
 set(CMAKE_BUILD_TYPE      Release)
 
+set(ZMQ_BUILD_TESTS OFF CACHE BOOL "Build the tests for ZeroMQ")
 add_subdirectory("${LIBZMQ_DIR}" EXCLUDE_FROM_ALL)
 
 set_property(TARGET libzmq-static APPEND_STRING PROPERTY COMPILE_FLAGS " -fPIC ")
