@@ -73,7 +73,7 @@ namespace communication
             {
                 zmq::message_t message;
                 subscriber_.recv(&message);
-
+                
                 return(std::string(static_cast<const char*>(message.data()), message.size()));
             }
     };

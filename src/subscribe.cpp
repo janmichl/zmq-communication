@@ -11,13 +11,21 @@
 
 int main()
 {
-    communication::Subscriber<std::vector<double> > subscriber("topic");
-    
-    std::vector<double> message;
-    while(true)
+    try
     {
-        subscriber.receive(message);
-        std::cout << "Received: " << message[0] << " " << message[1] << std::endl;
+        communication::Subscriber<std::vector<double> > subscriber("topic");
+        
+        std::vector<double> message;
+        while(true)
+        {
+            subscriber.receive(message);
+            std::cout << "Received: " << message[0] << " " << message[1] << std::endl;
+        }
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "Exception caught: " << e.what() << std::endl;
+        exit(-1);
     }
     
     return(0);

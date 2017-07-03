@@ -34,9 +34,9 @@ namespace communication
             }
             
             
-            void publish(const char* topic, const message_type& message)
+            void publish(const char* topic_name, const message_type& message)
             {
-                setTopic(std::string(topic));
+                sendTopicName(std::string(topic_name));
                 msgpack::sbuffer serialized_message;
                 serializeMessage(serialized_message, message);
                 send(serialized_message);
@@ -55,23 +55,19 @@ namespace communication
             }
             
 
-            bool send(const msgpack::sbuffer& content)
+            void send(const msgpack::sbuffer& content)
             {
                 zmq::message_t message(content.size());
                 memcpy(message.data(), content.data(), content.size());
-                bool rc = publisher_.send(message);
-                
-                return(rc);
+                publisher_.send(message);
             }
             
             
-            bool setTopic(const std::string& topic_name)
+            void sendTopicName(const std::string& topic_name)
             {
                 zmq::message_t message(topic_name.size());
                 memcpy(message.data(), topic_name.data(), topic_name.size());
-                bool rc = publisher_.send(message, ZMQ_SNDMORE);
-                
-                return(rc);
+                publisher_.send(message, ZMQ_SNDMORE);
             }
     };
 }
