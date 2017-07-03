@@ -5,6 +5,8 @@
     @brief
 */
 
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -18,8 +20,6 @@
 
 #include <msgpack.hpp>
 #include <zmq.hpp>
-
-#define ZEROMQ_NUM_OF_THREADS_USED 1
 
 namespace communication
 {
@@ -37,9 +37,9 @@ namespace communication
             void publish(const char* topic, const message_type& message)
             {
                 setTopic(std::string(topic));
-                msgpack::sbuffer sbuf;
-                serializeMessage(sbuf, message);
-                send(sbuf);
+                msgpack::sbuffer serialized_message;
+                serializeMessage(serialized_message, message);
+                send(serialized_message);
             }
         
         
@@ -49,10 +49,9 @@ namespace communication
 
 
         private:
-            void serializeMessage(msgpack::sbuffer& sbuf, const message_type& message)
+            void serializeMessage(msgpack::sbuffer& message_to_serialize, const message_type& message)
             {
-                // serialize it into simple buffer.
-                msgpack::pack(sbuf, message);
+                msgpack::pack(message_to_serialize, message);
             }
             
 
@@ -75,21 +74,4 @@ namespace communication
                 return(rc);
             }
     };
-}
-
-
-int main()
-{
-    communication::Publisher<std::vector<double> > publisher;
-
-    std::vector<double> message;
-    message.push_back(10);
-    message.push_back(20);
-
-    while(true)
-    {
-        publisher.publish("topic", message);
-    }
-    
-    return(0);
 }

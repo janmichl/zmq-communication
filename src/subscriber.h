@@ -18,8 +18,6 @@
 #include <msgpack.hpp>
 #include <zmq.hpp>
 
-#define ZEROMQ_NUM_OF_THREADS_USED 1
-
 namespace communication
 {
     template <typename message_type> 
@@ -36,23 +34,22 @@ namespace communication
             }
             
             
-            void receive(message_type& message)
+            void receive(message_type& deserialized_message)
             {
                 //remove topic name from message
                 receiveFromSocket();
 
-                msgpack::sbuffer sbuf;
-                receiveFromSocket(sbuf);
+                msgpack::sbuffer serialized_message;
+                receiveFromSocket(serialized_message);
                 
                 // deserialize it.
-                msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
+                msgpack::object_handle oh = msgpack::unpack(serialized_message.data(), serialized_message.size());
 
                 // print the deserialized object.
                 msgpack::object obj = oh.get();
-                //std::cout << obj << std::endl;
 
                 // convert it into statically typed object.
-                obj.convert(message);
+                obj.convert(deserialized_message);
             }
 
 
@@ -62,11 +59,11 @@ namespace communication
 
 
         private:
-            void receiveFromSocket(msgpack::sbuffer& sbuf)
+            void receiveFromSocket(msgpack::sbuffer& serialized_message)
             {
                 zmq::message_t message;
                 subscriber_.recv(&message);
-                sbuf.write(static_cast<const char *>(message.data()), message.size());
+                serialized_message.write(static_cast<const char *>(message.data()), message.size());
             }
             
             
@@ -75,22 +72,7 @@ namespace communication
                 zmq::message_t message;
                 subscriber_.recv(&message);
 
-                return(std::string(static_cast<char*>(message.data()), message.size()));
+                return(std::string(static_cast<const char*>(message.data()), message.size()));
             }
     };
-}
-
-
-int main()
-{
-    communication::Subscriber<std::vector<double> > subscriber("topic");
-    
-    std::vector<double> message;
-    while(true)
-    {
-        subscriber.receive(message);
-        std::cout << "Received: " << message[0] << " " << message[1] << std::endl;
-    }
-    
-    return(0);
 }
