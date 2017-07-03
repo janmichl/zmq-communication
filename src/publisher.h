@@ -30,7 +30,7 @@ namespace communication
             Publisher(const char* topic, const char* ip, const char* port) : context_(ZEROMQ_NUM_OF_THREADS_USED),
                                                                              publisher_(context_, ZMQ_PUB)
             {
-                topic_ = topic;
+                topic_ = std::string(topic);
 
                 std::string ip_and_port = "tcp://" + std::string(ip) + ":" + std::string(port);
                 publisher_.bind(ip_and_port.c_str());
