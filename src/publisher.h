@@ -34,12 +34,12 @@ namespace communication
             }
             
             
-            void publish(const char* topic_name, const message_type& message)
+            void publish(const char* topic_name, const message_type& message_to_publish)
             {
                 sendTopicName(std::string(topic_name));
-                msgpack::sbuffer serialized_message;
-                serializeMessage(serialized_message, message);
-                send(serialized_message);
+                msgpack::sbuffer serialized_message_to_publish;
+                serializeMessage(serialized_message_to_publish, message_to_publish);
+                send(serialized_message_to_publish);
             }
         
         
@@ -49,9 +49,9 @@ namespace communication
 
 
         private:
-            void serializeMessage(msgpack::sbuffer& message_to_serialize, const message_type& message)
+            void serializeMessage(msgpack::sbuffer& serialized_message, const message_type& message_to_serialize)
             {
-                msgpack::pack(message_to_serialize, message);
+                msgpack::pack(serialized_message, message_to_serialize);
             }
             
 

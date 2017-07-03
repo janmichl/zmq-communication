@@ -36,7 +36,7 @@ namespace communication
             }
             
             
-            void receive(message_type& deserialized_message)
+            void receive(message_type& received_message)
             {
                 //remove topic name from message
                 receiveFromSocket();
@@ -51,7 +51,7 @@ namespace communication
                 msgpack::object obj = oh.get();
 
                 // convert it into statically typed object.
-                obj.convert(deserialized_message);
+                obj.convert(received_message);
             }
 
 
