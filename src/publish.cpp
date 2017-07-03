@@ -13,7 +13,7 @@ int main()
 {
     try
     {
-        communication::Publisher<std::vector<double> > publisher("topic");
+        communication::Publisher<std::vector<double> > publisher("topic", "127.0.0.1", "5563");
 
         std::vector<double> message;
         message.push_back(10);

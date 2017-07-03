@@ -27,11 +27,13 @@ namespace communication
     class Publisher
     {
         public:
-            Publisher(const char* topic) : context_(ZEROMQ_NUM_OF_THREADS_USED),
-                                           publisher_(context_, ZMQ_PUB)
+            Publisher(const char* topic, const char* ip, const char* port) : context_(ZEROMQ_NUM_OF_THREADS_USED),
+                                                                             publisher_(context_, ZMQ_PUB)
             {
                 topic_ = topic;
-                publisher_.bind("tcp://*:5563");
+
+                std::string ip_and_port = "tcp://" + std::string(ip) + ":" + std::string(port);
+                publisher_.bind(ip_and_port.c_str());
             }
             
             

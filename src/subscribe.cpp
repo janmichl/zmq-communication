@@ -13,7 +13,7 @@ int main()
 {
     try
     {
-        communication::Subscriber<std::vector<double> > subscriber("topic");
+        communication::Subscriber<std::vector<double> > subscriber("topic", "127.0.0.1", "5563");
         
         std::vector<double> message;
         while(true)

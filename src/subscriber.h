@@ -26,12 +26,13 @@ namespace communication
     class Subscriber
     {
         public:
-            Subscriber(const char* topic) : context_(ZEROMQ_NUM_OF_THREADS_USED),
-                                                   subscriber_(context_, ZMQ_SUB)
+            Subscriber(const char* topic, const char* ip, const char* port) : context_(ZEROMQ_NUM_OF_THREADS_USED),
+                                                                              subscriber_(context_, ZMQ_SUB)
             {
-                std::string topic_str = std::string(topic);
+                std::string ip_and_port = "tcp://" + std::string(ip) + ":" + std::string(port);
+                subscriber_.connect(ip_and_port.c_str());
                 
-                subscriber_.connect("tcp://localhost:5563");
+                std::string topic_str = std::string(topic);
                 subscriber_.setsockopt(ZMQ_SUBSCRIBE, topic_str.data(), topic_str.size());
             }
             
