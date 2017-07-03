@@ -27,16 +27,17 @@ namespace communication
     class Publisher
     {
         public:
-            Publisher() : context_(ZEROMQ_NUM_OF_THREADS_USED),
-                          publisher_(context_, ZMQ_PUB)
+            Publisher(const char* topic) : context_(ZEROMQ_NUM_OF_THREADS_USED),
+                                           publisher_(context_, ZMQ_PUB)
             {
+                topic_ = topic;
                 publisher_.bind("tcp://*:5563");
             }
             
             
-            void publish(const char* topic_name, const message_type& message_to_publish)
+            void publish(const message_type& message_to_publish)
             {
-                sendTopicName(std::string(topic_name));
+                sendPart(topic_);
                 msgpack::sbuffer serialized_message_to_publish;
                 serializeMessage(serialized_message_to_publish, message_to_publish);
                 send(serialized_message_to_publish);
@@ -46,6 +47,7 @@ namespace communication
         private:
             zmq::context_t context_;
             zmq::socket_t  publisher_;
+            std::string    topic_;
 
 
         private:
@@ -63,10 +65,10 @@ namespace communication
             }
             
             
-            void sendTopicName(const std::string& topic_name)
+            void sendPart(const std::string& message_part)
             {
-                zmq::message_t message(topic_name.size());
-                memcpy(message.data(), topic_name.data(), topic_name.size());
+                zmq::message_t message(message_part.size());
+                memcpy(message.data(), message_part.data(), message_part.size());
                 publisher_.send(message, ZMQ_SNDMORE);
             }
     };

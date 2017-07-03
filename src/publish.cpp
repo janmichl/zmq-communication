@@ -13,7 +13,7 @@ int main()
 {
     try
     {
-        communication::Publisher<std::vector<double> > publisher;
+        communication::Publisher<std::vector<double> > publisher("topic");
 
         std::vector<double> message;
         message.push_back(10);
@@ -21,7 +21,7 @@ int main()
 
         while(true)
         {
-            publisher.publish("topic", message);
+            publisher.publish(message);
         }
     }
     catch(const std::exception& e)
